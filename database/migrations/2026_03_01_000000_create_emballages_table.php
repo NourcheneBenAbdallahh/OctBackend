@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('packagings', function (Blueprint $table) {
+        Schema::create('emballages', function (Blueprint $table) {
             $table->id();
 
-            $table->string('code', 50)->unique();      // ex: PKG-001
+            $table->string('code', 50)->unique();      // ex: EMB-001
             $table->string('name', 255);               // ex: Sachet 1kg
             $table->string('type', 50);                // ex: SACHET, CARTON
 
@@ -26,6 +26,6 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('packagings');
+        Schema::dropIfExists('emballages');
     }
 };
