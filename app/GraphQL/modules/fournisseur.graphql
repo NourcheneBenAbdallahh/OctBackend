@@ -1,0 +1,50 @@
+enum StatutFournisseur {
+  ACTIF
+  INACTIF
+}
+
+type Fournisseur {
+  id: ID!
+  raison_sociale: String!
+  matricule_fiscale: String!
+  telephone: String
+  adresse: String
+  statut: StatutFournisseur!
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+input FournisseurCreateInput {
+  raison_sociale: String!
+  matricule_fiscale: String!
+  telephone: String
+  adresse: String
+  statut: StatutFournisseur = ACTIF
+}
+
+input FournisseurUpdateInput {
+  raison_sociale: String
+  matricule_fiscale: String
+  telephone: String
+  adresse: String
+  statut: StatutFournisseur
+}
+
+extend type Query {
+  fournisseurs: [Fournisseur!]!
+    @field(resolver: "App\\GraphQL\\Mutations\\FournisseurMutator@list")
+
+  fournisseur(id: ID!): Fournisseur
+    @field(resolver: "App\\GraphQL\\Mutations\\FournisseurMutator@find")
+}
+
+extend type Mutation {
+  createFournisseur(input: FournisseurCreateInput!): Fournisseur!
+    @field(resolver: "App\\GraphQL\\Mutations\\FournisseurMutator@create")
+
+  updateFournisseur(id: ID!, input: FournisseurUpdateInput!): Fournisseur!
+    @field(resolver: "App\\GraphQL\\Mutations\\FournisseurMutator@update")
+
+  deleteFournisseur(id: ID!): Boolean!
+    @field(resolver: "App\\GraphQL\\Mutations\\FournisseurMutator@delete")
+}

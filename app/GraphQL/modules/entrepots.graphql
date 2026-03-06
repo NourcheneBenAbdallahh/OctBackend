@@ -1,0 +1,38 @@
+type Entrepot {
+
+  id: ID!
+    nom: String!
+  adresse: String
+  capacite_totale: Float
+  capacite_disponible: Float
+  statut: String
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+input EntrepotCreateInput {
+    nom: String!
+  adresse: String
+  capacite_totale: Float
+  capacite_disponible: Float
+  statut: String
+}
+
+input EntrepotUpdateInput {
+    nom: String
+  adresse: String
+  capacite_totale: Float
+  capacite_disponible: Float
+  statut: String
+}
+
+extend type Query {
+  entrepots: [Entrepot!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
+  entrepot(id: ID! @eq): Entrepot @find
+}
+
+extend type Mutation {
+  createEntrepot(input: EntrepotCreateInput!): Entrepot @create
+  updateEntrepot(id: ID!, input: EntrepotUpdateInput!): Entrepot @update
+  deleteEntrepot(id: ID!): Entrepot @delete
+}

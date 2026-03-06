@@ -11,7 +11,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(\App\Services\StockService::class);
+    $this->app->singleton(\App\Services\StockInventaireService::class);
+    $this->app->singleton(\App\Services\LotService::class);
     }
 
     /**

@@ -6,24 +6,34 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('stocks', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('entrepot_id')->constrained();
-    $table->string('article_ref');
-    $table->decimal('quantite_actuelle', 15,2)->default(0);
-    $table->unique(['entrepot_id','article_ref']);
-    $table->timestamps();
-});
+            $table->id();
+
+            $table->foreignId('entrepot_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('emballage_id')->constrained()->cascadeOnDelete();
+
+            $table->foreignId('lot_id')->nullable()
+                ->constrained('lots')->nullOnDelete();
+
+            $table->dateTime('date_stock');
+
+            $table->decimal('quantite_init', 15, 2)->default(0);
+            $table->decimal('quantite_entree', 15, 2)->default(0);
+            $table->decimal('quantite_sortie', 15, 2)->default(0);
+            $table->decimal('quantite_finale', 15, 2)->default(0);
+
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
+
+            $table->unique(['entrepot_id', 'emballage_id', 'lot_id']);
+
+            $table->index(['entrepot_id', 'emballage_id', 'date_stock']);
+
+            $table->timestamps();
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('stocks');

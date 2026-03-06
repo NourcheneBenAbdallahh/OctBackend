@@ -11,19 +11,42 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('commandes', function (Blueprint $table) {
-    $table->id();
-    $table->string('numero_commande')->unique();
-    $table->date('date_commande');
-    $table->date('date_livraison_prevue')->nullable();
-    $table->enum('statut', ['BROUILLON','VALIDE','ANNULE','LIVRE'])->default('BROUILLON');
-    $table->string('article_ref')->nullable();
-    $table->decimal('quantite', 15,2)->nullable();
-    $table->foreignId('fournisseur_id')->constrained();
-    $table->foreignId('contrat_id')->nullable()->constrained();
-    $table->foreignId('created_by')->constrained('users');
-    $table->timestamps();
-});
+        Schema::create('commandes', function (Blueprint $table) {
+            $table->id();
+
+            $table->string('numero_commande')->unique();
+            $table->date('date_commande');
+            $table->date('date_livraison_prevue')->nullable();
+
+            $table->enum('statut', ['BROUILLON','VALIDE','ANNULE','LIVRE'])
+                  ->default('BROUILLON');
+
+            $table->foreignId('emballage_id')
+                  ->constrained('emballages')
+                  ->cascadeOnDelete();
+
+            $table->decimal('quantite', 15, 2)->nullable();
+
+            $table->foreignId('fournisseur_id')
+                  ->constrained()
+                  ->cascadeOnDelete();
+
+            $table->foreignId('contrat_id')
+                  ->nullable()
+                  ->constrained()
+                  ->nullOnDelete();
+
+            $table->foreignId('entrepot_id')
+                  ->nullable()
+                  ->constrained()
+                  ->nullOnDelete();
+
+            $table->foreignId('created_by')
+                  ->constrained('users')
+                  ->cascadeOnDelete();
+
+            $table->timestamps();
+        });
     }
 
     /**

@@ -1,0 +1,38 @@
+enum TypeMvt {
+  ENTREE
+  SORTIE
+  TRANSFERT
+  AJUSTEMENT
+}
+
+type Lot {
+  id: ID!
+  code_lot: String!
+  emballage_id: ID!
+  type_mvt: TypeMvt!
+  quantite: Float!
+  entrepot_source_id: ID
+  entrepot_dest_id: ID
+  user_id: ID
+  date_mvt: DateTime!
+  commentaire: String
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+input CreateLotInput {
+  code_lot: String!
+  emballage_id: ID!
+  type_mvt: TypeMvt!
+  quantite: Float!
+  entrepot_source_id: ID
+  entrepot_dest_id: ID
+  user_id: ID
+  date_mvt: DateTime!
+  commentaire: String
+}
+
+extend type Mutation {
+  createLot(input: CreateLotInput!): Lot
+    @field(resolver: "App\\GraphQL\\Mutations\\LotMutation@create")
+}
