@@ -6,8 +6,11 @@ use App\Services\LotService;
 
 class LotMutation
 {
+    public function __construct(private LotService $lotService) {}
+
     public function create($_, array $args)
     {
-        return app(LotService::class)->createLotAndApply($args['input']);
+        // args['input'] contient le payload
+        return $this->lotService->createLotAndApply($args['input']);
     }
 }
