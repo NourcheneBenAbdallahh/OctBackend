@@ -15,4 +15,9 @@ class Emballage extends Model
         'material',
         'status',
     ];
+
+    public function contrats()
+{
+    return $this->hasMany(Contrat::class, 'emballage_id');
+}
 }

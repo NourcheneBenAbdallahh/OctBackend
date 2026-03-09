@@ -1,0 +1,22 @@
+type Stock {
+  id: ID!
+  entrepot_id: ID!
+  emballage_id: ID!
+  lot_id: ID
+  date_stock: DateTime!
+  quantite_init: Float!
+  quantite_entree: Float!
+  quantite_sortie: Float!
+  quantite_finale: Float!
+  user_id: ID
+  created_at: DateTime
+  updated_at: DateTime
+}
+
+extend type Query {
+  stockHistory(entrepot_id: ID!, emballage_id: ID!, from: DateTime!, to: DateTime!): [Stock!]!
+    @field(resolver: "App\\GraphQL\\Queries\\StockQuery@history")
+
+  stockTheoriqueAt(entrepot_id: ID!, emballage_id: ID!, at: DateTime!): Float!
+    @field(resolver: "App\\GraphQL\\Queries\\StockQuery@theoriqueAt")
+}

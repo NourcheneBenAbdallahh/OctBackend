@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('entrepots', function (Blueprint $table) {
-    $table->id();
+    $table->id();    
+    $table->string('nom');
+
     $table->string('adresse');
     $table->decimal('capacite_totale', 15,2)->nullable();
     $table->decimal('capacite_disponible', 15,2)->nullable();

@@ -16,3 +16,4 @@ Route::get('/debug-class', function () {
         'class_exists' => class_exists(\App\GraphQL\Mutations\EmbballageMutator::class),
     ]);
 });
+

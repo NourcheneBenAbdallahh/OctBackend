@@ -11,16 +11,40 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('mouvement_stocks', function (Blueprint $table) {
-    $table->id();
-    $table->enum('type_mouvement', ['ENTREE','SORTIE','TRANSFERT','AJUSTEMENT','INVENTAIRE']);
-    $table->string('article_ref');
-    $table->decimal('quantite', 15,2);
-    $table->foreignId('entrepot_source')->nullable()->constrained('entrepots');
-    $table->foreignId('entrepot_destination')->nullable()->constrained('entrepots');
-    $table->foreignId('user_id')->constrained('users');
-    $table->timestamps();
-});
+        Schema::create('mouvement_stocks', function (Blueprint $table) {
+            $table->id();
+
+            $table->enum('type_mouvement', [
+                'ENTREE',
+                'SORTIE',
+                'TRANSFERT',
+                'AJUSTEMENT',
+                'INVENTAIRE'
+            ]);
+
+            // 🔹 Remplacement de article_ref par emballage_id
+            $table->foreignId('emballage_id')
+                  ->constrained('emballages')
+                  ->cascadeOnDelete();
+
+            $table->decimal('quantite', 15, 2);
+
+            $table->foreignId('entrepot_source')
+                  ->nullable()
+                  ->constrained('entrepots')
+                  ->nullOnDelete();
+
+            $table->foreignId('entrepot_destination')
+                  ->nullable()
+                  ->constrained('entrepots')
+                  ->nullOnDelete();
+
+            $table->foreignId('user_id')
+                  ->constrained('users')
+                  ->cascadeOnDelete();
+
+            $table->timestamps();
+        });
     }
 
     /**
