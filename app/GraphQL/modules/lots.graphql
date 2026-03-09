@@ -1,6 +1,4 @@
-"""
-Mouvements de stock (journal). Chaque mouvement crée un Lot.
-"""
+
 type Lot {
   id: ID!
   code_lot: String!
@@ -47,7 +45,6 @@ input LotUpdateInput {
   quantite: Float
   date_mvt: DateTime
   commentaire: String
-  # Recommandation: ne pas permettre de changer type/entrepots/emballage après création
 }
 
 extend type Query {
