@@ -17,19 +17,10 @@ return new class extends Migration
                   ->constrained('emballages')
                   ->cascadeOnDelete();
 
-            $table->enum('type_mvt', ['ENTREE','SORTIE','TRANSFERT','AJUSTEMENT']);
 
             $table->decimal('quantite', 15, 2);
 
-            $table->foreignId('entrepot_source_id')
-                  ->nullable()
-                  ->constrained('entrepots')
-                  ->nullOnDelete();
-
-            $table->foreignId('entrepot_dest_id')
-                  ->nullable()
-                  ->constrained('entrepots')
-                  ->nullOnDelete();
+            
 
             $table->foreignId('user_id')
                   ->nullable()

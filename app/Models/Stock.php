@@ -15,8 +15,8 @@ class Stock extends Model
         'lot_id',
         'date_stock',
         'quantite_init',
-        'quantite_entree',
-        'quantite_sortie',
+        'quantite',
+        'sens',
         'quantite_finale',
         'user_id',
     ];
@@ -24,8 +24,7 @@ class Stock extends Model
     protected $casts = [
         'date_stock' => 'datetime',      
         'quantite_init' => 'decimal:2',
-        'quantite_entree' => 'decimal:2',
-        'quantite_sortie' => 'decimal:2',
+        'quantite' => 'decimal:2',
         'quantite_finale' => 'decimal:2',
     ];
 

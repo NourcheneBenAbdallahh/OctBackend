@@ -1,70 +1,54 @@
-
 type Lot {
   id: ID!
   code_lot: String!
-  type_mvt: LotTypeMvt!
   quantite: Float!
   date_mvt: DateTime!
   commentaire: String
 
   emballage_id: ID!
-  entrepot_source_id: ID
-  entrepot_dest_id: ID
   user_id: ID
 
   emballage: Emballage @belongsTo
-  entrepotSource: Entrepot @belongsTo(relation: "entrepotSource")
-  entrepotDest: Entrepot @belongsTo(relation: "entrepotDest")
   user: User @belongsTo
 
   created_at: DateTime
   updated_at: DateTime
 }
 
-enum LotTypeMvt {
-  ENTREE
-  SORTIE
-  TRANSFERT
-  AJUSTEMENT
-}
-
 input LotCreateInput {
   code_lot: String!
   emballage_id: ID!
-  type_mvt: LotTypeMvt!
   quantite: Float!
+  entrepot_id: ID!
+  sens: String
   date_mvt: DateTime!
   commentaire: String
-  entrepot_source_id: ID
-  entrepot_dest_id: ID
   user_id: ID
 }
 
 input LotUpdateInput {
   code_lot: String
+  emballage_id: ID
   quantite: Float
+  entrepot_id: ID
+  sens: String
   date_mvt: DateTime
   commentaire: String
+  user_id: ID
 }
 
 extend type Query {
-  lots: [Lot!]! @paginate(defaultCount: 10) @orderBy(column: "id", direction: DESC)
+  lots: [Lot!]! @paginate(defaultCount: 10)
   lot(id: ID! @eq): Lot @find
 }
 
 extend type Mutation {
-  """
-  Create Lot + update Stock(s) inside a DB transaction.
-  """
   createLot(input: LotCreateInput!): Lot
     @field(resolver: "App\\GraphQL\\Mutations\\LotMutation@create")
 
-  """
-  Update uniquement des champs “descriptifs”.
-  """
   updateLot(id: ID!, input: LotUpdateInput!): Lot
-    @update
+    @field(resolver: "App\\GraphQL\\Mutations\\LotMutation@update")
 
   deleteLot(id: ID!): Lot
-    @delete
+    @field(resolver: "App\\GraphQL\\Mutations\\LotMutation@delete")
 }

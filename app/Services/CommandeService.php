@@ -54,8 +54,10 @@ class CommandeService
                 'receptionne_par' => 1,
                 'statut'          => 'EN_ATTENTE',
                 'commande_id'     => $commande->id,
-              //  'numero_commande' => $commande->numero_commande,
-                'emballage_id'    => $commande->emballage_id,
+               'numero_commande' => $commande->numero_commande,
+                'emballage_id'    => $commande->emballage_id,       
+                'quantite_recue' => $commande->quantite,
+
             ]);
 
             return $commande;

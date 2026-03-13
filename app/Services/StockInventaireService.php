@@ -23,7 +23,6 @@ class StockInventaireService
             return StockInventaire::create([
                 'entrepot_id'      => $input['entrepot_id'],
                 'emballage_id'     => $input['emballage_id'],
-                'lot_id'           => $input['lot_id'] ?? null, 
                 'stock_theorique'  => $theorique,               // système
                 'stock_physique'   => $physique,                // comptage
                 'ecart'            => $ecart,
@@ -32,4 +31,9 @@ class StockInventaireService
             ]);
         });
     }
+    public function removeInventairesFromLot(Lot $lot): void
+{
+    \App\Models\StockInventaire::where('lot_id', $lot->id)->delete();
+}
+
 }

@@ -52,6 +52,7 @@ class BonLivraisonService
         }
 
         $data['commande_id'] = $commande->id;
+        $data['quantite_recue'] = $commande->quantite;
 
         return BonLivraison::create($data);
     }

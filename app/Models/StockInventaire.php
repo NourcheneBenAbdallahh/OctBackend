@@ -12,7 +12,6 @@ class StockInventaire extends Model
     protected $fillable = [
         'entrepot_id',
         'emballage_id',
-        'lot_id',
         'stock_physique',
         'stock_theorique',
         'ecart',
@@ -37,10 +36,7 @@ class StockInventaire extends Model
         return $this->belongsTo(Emballage::class, 'emballage_id');
     }
 
-    public function lot(): BelongsTo
-    {
-        return $this->belongsTo(Lot::class, 'lot_id');
-    }
+
 
     public function user(): BelongsTo
     {

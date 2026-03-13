@@ -24,7 +24,6 @@ class StockInventaireMutator
             return StockInventaire::create([
                 'entrepot_id'      => $entrepotId,
                 'emballage_id'     => $emballageId,
-                'lot_id'           => $input['lot_id'] ?? null,
                 'stock_physique'   => $physique,
                 'stock_theorique'  => $theorique,
                 'ecart'            => $physique - $theorique,
@@ -56,7 +55,6 @@ class StockInventaireMutator
             );
 
             $inv->fill([
-                'lot_id'          => $input['lot_id'] ?? $inv->lot_id,
                 'stock_physique'  => $physique,
                 'stock_theorique' => $theorique,
                 'ecart'           => $physique - $theorique,

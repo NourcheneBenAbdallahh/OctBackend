@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('date_commande');
             $table->date('date_livraison_prevue')->nullable();
 
-            $table->enum('statut', ['BROUILLON','VALIDE','ANNULE','LIVRE'])
+            $table->enum('statut', ['BROUILLON','VALIDEE','EN_ATTENTE_BL','RECEPTIONNEE','ANNULEE'])
                   ->default('BROUILLON');
 
             $table->foreignId('emballage_id')

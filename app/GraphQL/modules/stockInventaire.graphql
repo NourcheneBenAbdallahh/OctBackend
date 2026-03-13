@@ -2,7 +2,6 @@
 input CreateStockInventaireInput {
   entrepot_id: ID!
   emballage_id: ID!
-  lot_id: ID
   stock_physique: Float!
   user_id: ID
   date_inventaire: DateTime!
@@ -10,7 +9,6 @@ input CreateStockInventaireInput {
 
 "Mise à jour"
 input UpdateStockInventaireInput {
-  lot_id: ID
   stock_physique: Float
   user_id: ID
   date_inventaire: DateTime
@@ -20,7 +18,6 @@ type StockInventaire {
   id: ID!
   entrepot_id: ID!
   emballage_id: ID!
-  lot_id: ID
   stock_physique: Float!
   stock_theorique: Float!
   ecart: Float!

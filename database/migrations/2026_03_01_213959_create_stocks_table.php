@@ -20,13 +20,13 @@ return new class extends Migration
             $table->dateTime('date_stock');
 
             $table->decimal('quantite_init', 15, 2)->default(0);
-            $table->decimal('quantite_entree', 15, 2)->default(0);
-            $table->decimal('quantite_sortie', 15, 2)->default(0);
+            $table->decimal('quantite', 15, 2)->default(0);
+            $table->string('sens', 20); 
             $table->decimal('quantite_finale', 15, 2)->default(0);
 
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
 
-            $table->unique(['entrepot_id', 'emballage_id', 'lot_id']);
+           /// $table->unique(['entrepot_id', 'emballage_id', 'lot_id']);
 
             $table->index(['entrepot_id', 'emballage_id', 'date_stock']);
 

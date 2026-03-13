@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->string('numero_bl')->unique();
             $table->date('date_reception');
+            $table->string('numero_commande');
 
             $table->enum('statut', ['EN_ATTENTE','VALIDE'])
                   ->default('EN_ATTENTE');

@@ -12,7 +12,7 @@ class BonLivraison extends Model
         'statut',
         'emballage_id',
         'quantite_recue',
-        //'numero_commande',
+        'numero_commande',
         'commande_id',
         'entrepot_id',
         'receptionne_par',

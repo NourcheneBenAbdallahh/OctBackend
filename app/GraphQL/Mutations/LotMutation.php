@@ -10,7 +10,19 @@ class LotMutation
 
     public function create($_, array $args)
     {
-        // args['input'] contient le payload
         return $this->lotService->createLotAndApply($args['input']);
+    }
+
+    public function update($_, array $args)
+    {
+        return $this->lotService->updateLotWithHistory(
+            (int) $args['id'],
+            $args['input']
+        );
+    }
+
+    public function delete($_, array $args)
+    {
+        return $this->lotService->deleteLot((int) $args['id']);
     }
 }
