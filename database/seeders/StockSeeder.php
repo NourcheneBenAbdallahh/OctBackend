@@ -15,12 +15,10 @@ class StockSeeder extends Seeder
             'lot_id' => null,
             'date_stock' => '2026-03-01 10:00:00',
 
-            'quantite_init' => 1000,
 
             'quantite' => 200,
             'sens' => 'entree',
 
-            'quantite_finale' => 1200,
 
             'user_id' => 1,
             'created_at' => now(),

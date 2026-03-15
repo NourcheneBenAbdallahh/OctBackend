@@ -44,83 +44,71 @@ class StockService
         Carbon $at,
         int $lotId,
         ?int $userId,
-        float $qte,
+        float $quantite,
         string $sens
     ): Stock {
-        return DB::transaction(function () use (
-            $entrepotId,
-            $emballageId,
-            $at,
-            $lotId,
-            $userId,
-            $qte,
-            $sens
-        ) {
-            $lastFinale = Stock::where('entrepot_id', $entrepotId)
-                ->where('emballage_id', $emballageId)
-                ->where('date_stock', '<=', $at)
-                ->orderByDesc('date_stock')
-                ->orderByDesc('id')
-                ->lockForUpdate()
-                ->value('quantite_finale');
-
-            $init = $lastFinale ? (float) $lastFinale : 0;
-
-            $finale = match ($sens) {
-                'entree' => $init + $qte,
-                'sortie' => $init - $qte,
-                default => throw new RuntimeException("sens non supporté"),
-            };
-
-            if ($finale < 0) {
-                throw new RuntimeException("Stock insuffisant.");
-            }
-
-            return Stock::create([
-                'entrepot_id' => $entrepotId,
-                'emballage_id' => $emballageId,
-                'lot_id' => $lotId,
-                'date_stock' => $at,
-                'quantite_init' => $init,
-                'qte' => $qte,
-                'sens' => $sens,
-                'quantite_finale' => $finale,
-                'user_id' => $userId,
-            ]);
-        });
+        return Stock::create([
+            'entrepot_id' => $entrepotId,
+            'emballage_id' => $emballageId,
+            'lot_id' => $lotId,
+            'date_stock' => $at,
+            'quantite' => $quantite,
+            'sens' => $sens,
+            'user_id' => $userId,
+        ]);
     }
 
-    public function getTheoriqueAt(int $entrepotId, int $emballageId, string $dateTime): float
+    /*public function getTheoriqueAt(int $entrepotId, int $emballageId, string $dateTime): float
     {
         $dt = Carbon::parse($dateTime);
 
-        $finale = Stock::where('entrepot_id', $entrepotId)
+        $stocks = Stock::where('entrepot_id', $entrepotId)
             ->where('emballage_id', $emballageId)
             ->where('date_stock', '<=', $dt)
-            ->orderByDesc('date_stock')
-            ->orderByDesc('id')
-            ->value('quantite_finale');
+            ->orderBy('date_stock', 'asc')
+            ->orderBy('id', 'asc')
+            ->get();
 
-        return $finale ? (float) $finale : 0;
-    }
+        $solde = 0;
+
+        foreach ($stocks as $stock) {
+            $quantite = (float) $stock->quantite;
+
+            if ($stock->sens === 'entree') {
+                $solde += $quantite;
+            } elseif ($stock->sens === 'sortie') {
+                $solde -= $quantite;
+            }
+        }
+
+        return $solde;
+    }*/
+
+        public function getTheoriqueAt(int $entrepotId, int $emballageId, string $dateTime): float
+{
+    $dt = Carbon::parse($dateTime)->endOfDay();
+
+    $stocks = Stock::where('entrepot_id', $entrepotId)
+        ->where('emballage_id', $emballageId)
+        ->where('date_stock', '<=', $dt)
+        ->get();
+
+    $entrees = $stocks
+        ->where('sens', 'entree')
+        ->sum('quantite');
+
+    $sorties = $stocks
+        ->where('sens', 'sortie')
+        ->sum('quantite');
+
+    return (float) $entrees - (float) $sorties;
+}
+
 
     public function updateStockFromLotChange(Lot $oldLot, Lot $newLot, array $context = []): void
     {
         $this->deleteStocksByLot($oldLot);
         $this->applyLotToStocks($newLot, $context);
-
-        $entrepotId = $context['entrepot_id'] ?? null;
-        if ($entrepotId) {
-            $oldDate = Carbon::parse($oldLot->date_mvt);
-            $newDate = Carbon::parse($newLot->date_mvt);
-            $rebuildFrom = $oldDate->lt($newDate) ? $oldDate : $newDate;
-
-            $this->rebuildStockTimeline(
-                $entrepotId,
-                $newLot->emballage_id,
-                $rebuildFrom
-            );
-        }
     }
 
     public function removeStocksFromLot(Lot $lot): void
@@ -156,46 +144,36 @@ class StockService
 
     public function rebuildStockTimeline(int $entrepotId, int $emballageId, Carbon $fromDate): void
     {
-        DB::transaction(function () use ($entrepotId, $emballageId, $fromDate) {
-            $previousStock = Stock::where('entrepot_id', $entrepotId)
-                ->where('emballage_id', $emballageId)
-                ->where('date_stock', '<', $fromDate)
-                ->orderBy('date_stock', 'desc')
-                ->orderBy('id', 'desc')
-                ->first();
-
-            $runningFinale = $previousStock ? (float) $previousStock->quantite_finale : 0;
-
-            $stocks = Stock::where('entrepot_id', $entrepotId)
-                ->where('emballage_id', $emballageId)
-                ->where('date_stock', '>=', $fromDate)
-                ->orderBy('date_stock', 'asc')
-                ->orderBy('id', 'asc')
-                ->lockForUpdate()
-                ->get();
-
-            foreach ($stocks as $stock) {
-                $stock->quantite_init = $runningFinale;
-
-                $stock->quantite_finale = match ($stock->sens) {
-                    'entree' => $runningFinale + (float) $stock->qte,
-                    'sortie' => $runningFinale - (float) $stock->qte,
-                    default => throw new RuntimeException("sens invalide lors du recalcul."),
-                };
-
-                if ($stock->quantite_finale < 0) {
-                    throw new RuntimeException("Stock insuffisant lors du recalcul.");
-                }
-
-                $stock->save();
-
-                $runningFinale = (float) $stock->quantite_finale;
-            }
-        });
+        // Plus de recalcul nécessaire :
+        // la table stock contient désormais uniquement des mouvements.
+        return;
     }
 
     public function deleteStocksByLot(Lot $lot): void
     {
         Stock::where('lot_id', $lot->id)->delete();
     }
+
+
+public function getStockSumPeriode(
+    int $entrepotId,
+    int $emballageId,
+    string $periodeDebut,
+    string $periodeFin
+): float {
+    $stocks = Stock::where('entrepot_id', $entrepotId)
+        ->where('emballage_id', $emballageId)
+        ->whereBetween('date_stock', [
+            Carbon::parse($periodeDebut)->startOfDay(),
+            Carbon::parse($periodeFin)->endOfDay(),
+        ])
+        ->get();
+
+    $entrees = $stocks->where('sens', 'entree')->sum('quantite');
+    $sorties = $stocks->where('sens', 'sortie')->sum('quantite');
+
+    return (float) $entrees - (float) $sorties;
+}
+
+
 }

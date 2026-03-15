@@ -24,5 +24,14 @@ class BonLivraisonMutator
     {
         $bonLivraison = BonLivraison::findOrFail($args['id']);
         return $this->service->delete($bonLivraison);
-    }
+    } 
+   public function validate($_, array $args)
+{
+    return $this->service->validateBonLivraison(
+        (int) $args['id'],
+        [
+            'document_bl' => $args['document_bl'],
+        ]
+    );
+}
 }

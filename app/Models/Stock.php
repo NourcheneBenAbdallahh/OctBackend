@@ -14,18 +14,18 @@ class Stock extends Model
         'emballage_id',
         'lot_id',
         'date_stock',
-        'quantite_init',
+        //'quantite_init',
         'quantite',
         'sens',
-        'quantite_finale',
+       // 'quantite_finale',
         'user_id',
     ];
 
     protected $casts = [
         'date_stock' => 'datetime',      
-        'quantite_init' => 'decimal:2',
+        //'quantite_init' => 'decimal:2',
         'quantite' => 'decimal:2',
-        'quantite_finale' => 'decimal:2',
+        //'quantite_finale' => 'decimal:2',
     ];
 
     public function entrepot(): BelongsTo

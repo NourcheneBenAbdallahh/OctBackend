@@ -55,7 +55,7 @@ return new class extends Migration
 
         // 5) Modifier ENUM type_mouvement (MySQL: DB::statement)
         DB::statement("ALTER TABLE mouvement_stocks 
-            MODIFY type_mouvement ENUM('ENT','PRD','CDD','PTE','SPL') NOT NULL");
+            MODIFY type_mouvement ENUM('ENT','PRD','CDD','PTE','SPL','EMC') NOT NULL");
     }
 
     public function down(): void

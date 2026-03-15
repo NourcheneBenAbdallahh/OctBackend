@@ -12,19 +12,26 @@ class StockInventaire extends Model
     protected $fillable = [
         'entrepot_id',
         'emballage_id',
-        'stock_physique',
+        'lot_id',
         'stock_theorique',
+        'stock_physique',
         'ecart',
         'user_id',
         'date_inventaire',
+        'periode_debut',
+        'periode_fin',
     ];
 
     protected $casts = [
-        'date_inventaire' => 'datetime',
-        'stock_physique' => 'decimal:2',
         'stock_theorique' => 'decimal:2',
+        'stock_physique' => 'decimal:2',
         'ecart' => 'decimal:2',
+        'date_inventaire' => 'datetime',
+        'periode_debut' => 'datetime',
+        'periode_fin' => 'datetime',
     ];
+
+    public $timestamps = true;
 
     public function entrepot(): BelongsTo
     {
